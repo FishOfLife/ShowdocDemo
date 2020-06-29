@@ -1,0 +1,2 @@
+F:\ShowdocDemo\ShowdocCode\obj\Debug\ShowdocCode.csprojAssemblyReference.cache
+F:\ShowdocDemo\ShowdocCode\obj\Debug\ShowdocCode.csproj.CoreCompileInputs.cache
