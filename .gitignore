@@ -1,5 +1,4 @@
-*.lock
-*.ide
-*.ide-shm
-*.ide-wal
-/ShowdocCode/.vs/ShowdocCode/v15/*.suo
+/.vs
+/bin
+/obj
+/packages
