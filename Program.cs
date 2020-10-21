@@ -18,7 +18,7 @@ namespace Showdoc
         private static void Main(string[] args)
         {
 
-            args = new string[] { "F:/VLabEditor-Realease/CodeRepos/GeneralAbility/VLabGeneralAbility/bin/Debug/VLabGeneralAbility.xml" };
+            //args = new string[] { "F:/VLabEditor-Realease/CodeRepos/GeneralAbility/VLabGeneralAbility/bin/Debug/VLabGeneralAbility.xml" };
             //1.遍历所有xml路径
             foreach (string arg in args)
             {
@@ -279,7 +279,7 @@ namespace Showdoc
             //描述
             string summary = GetTextByXmlNode(node.SelectSingleNode("summary"));
             string returnName = GetTextByXmlNode(node.SelectSingleNode("returns"));
-            string returnType = GetValueByKey(node.SelectSingleNode("returns"), "type");
+            string returnType = node.SelectSingleNode("returns")?.Attributes["type"]?.Value;
             KeyValuePair<string, string> returns = default(KeyValuePair<string, string>);
             if (!string.IsNullOrEmpty(returnName))
             {
@@ -350,7 +350,9 @@ namespace Showdoc
             for (int i = 0; i < showdoc.classes.Count; i++)
             {
                 ClassNode classNode = showdoc.classes[i];
-                sb.AppendFormat("# {0} {1}\n", i + 1, classNode.name);
+                int radex = classNode.name.LastIndexOf('.');
+                string className = classNode.name.Substring(radex + 1);
+                sb.AppendFormat("# {0} {1}\n", i + 1, className);
                 if (!string.IsNullOrEmpty(classNode.summary))
                 {
                     sb.AppendFormat("    {0}\n", classNode.summary);
