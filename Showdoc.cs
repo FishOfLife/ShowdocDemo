@@ -31,6 +31,7 @@ namespace Showdoc
         public string summary;
         public string catalog;
         public bool showdoc;
+        public List<PropertyNode> properties;
         public List<FieldNode> fields;
         public List<MethodNode> methods;
 
@@ -40,6 +41,7 @@ namespace Showdoc
             this.summary = string.Empty;
             this.catalog = string.Empty;
             this.showdoc = false;
+            this.properties = new List<PropertyNode>();
             this.fields = new List<FieldNode>();
             this.methods = new List<MethodNode>();
         }
@@ -50,18 +52,51 @@ namespace Showdoc
             this.summary = summary;
             this.catalog = catalog;
             this.showdoc = showdoc;
+            this.properties = new List<PropertyNode>();
             this.fields = new List<FieldNode>();
             this.methods = new List<MethodNode>();
         }
 
-        public ClassNode(string name, string summary, string catalog, bool showdoc, List<FieldNode> fields, List<MethodNode> methods)
+        public ClassNode(string name, string summary, string catalog, bool showdoc, List<PropertyNode> properties, List<FieldNode> fields, List<MethodNode> methods)
         {
             this.name = name;
             this.summary = summary;
             this.catalog = catalog;
             this.showdoc = showdoc;
+            this.properties = properties;
             this.fields = fields;
             this.methods = methods;
+        }
+
+    }
+
+    public struct PropertyNode
+    {
+        public string name;
+        public string type;
+        public string summary;
+        public Accessors accessors;
+        public string catalog;
+        public bool showdoc;
+
+        public PropertyNode(string name, string type, string summary)
+        {
+            this.name = name;
+            this.type = type;
+            this.summary = summary;
+            accessors = Accessors.None;
+            catalog = null;
+            showdoc = false;
+        }
+
+        public PropertyNode(string name, string type, string summary, string catalog, bool showdoc, Accessors accessors = Accessors.None)
+        {
+            this.name = name;
+            this.type = type;
+            this.summary = summary;
+            this.catalog = catalog;
+            this.showdoc = showdoc;
+            this.accessors = accessors;
         }
 
     }
@@ -79,7 +114,7 @@ namespace Showdoc
             this.name = name;
             this.type = type;
             this.summary = summary;
-            this.catalog = string.Empty;
+            this.catalog = null;
             this.showdoc = false;
         }
 
@@ -112,6 +147,14 @@ namespace Showdoc
             this.args = args;
             this.returns = returns;
         }
+    }
+
+    public enum Accessors
+    {
+        None = 0,
+        Get = 1,
+        Set = 2,
+        All = 3
     }
 
 }

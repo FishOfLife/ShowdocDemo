@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Summary</name>
+    </assembly>
+    <members>
+        <member name="T:Summary.Summary1">
+            <summary showdoc="true">
+            类描述
+            </summary>
+            <catalog>一级目录/二级目录/标题</catalog>
+        </member>
+        <member name="M:Summary.Summary1.Method1(System.Int32,System.Single,System.String,System.Double,System.Int64)">
+            <summary>
+            方法描述
+            </summary>
+            <param name="arg1">整数</param>
+            <param name="arg2">单精度浮点数</param>
+            <param name="arg3">字符串</param>
+            <param name="arg4">双精度浮点数</param>
+            <param name="arg5">长整型</param>
+            <returns>返回值</returns>
+        </member>
+        <member name="M:Summary.Summary1.Method2(Summary.State,System.Action,Summary.StructBody)">
+            <summary>
+            方法描述2
+            </summary>
+            <param name="state">枚举类型</param>
+            <param name="action">引用类型</param>
+            <param name="structBody">结构体</param>
+            <returns>返回整型</returns>
+        </member>
+        <member name="T:Summary.Summary2">
+            <summary showdoc="true">
+            类描述1
+            </summary>
+            <catalog>一级目录/二级目录/特殊参数方法</catalog>
+        </member>
+        <member name="M:Summary.Summary2.Method1(System.Func{System.String,System.Int32},System.Collections.Generic.Dictionary{System.Int32,Summary.StructBody})">
+            <summary>
+            复杂参数方法
+            </summary>
+            <param name="func">返回值的回调</param>
+            <param name="dictionary">字典</param>
+        </member>
+        <member name="M:Summary.Summary2.Method2">
+            <summary>
+            无参方法
+            </summary>
+            <returns>返回整型</returns>
+        </member>
+        <member name="T:Summary.Summary3">
+            <summary>
+             类描述2,showdoc在方法中
+             </summary>
+        </member>
+        <member name="M:Summary.Summary3.Method(System.String)">
+            <summary showdoc="true">
+            方法
+            </summary>
+            <param name="arg1">参数1</param>
+            <catalog>一级目录/二级目录/showdoc标签在方法上</catalog>
+        </member>
+        <member name="T:Summary.Summary4">
+            <summary showdoc="true">
+            只有类注释
+            </summary>
+            <catalog>一级目录/二级目录/只有类注释</catalog>
+        </member>
+    </members>
+</doc>
