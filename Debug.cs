@@ -1,17 +1,32 @@
 ﻿using System;
+using System.Configuration;
 
 namespace Showdoc
 {
-    public class Debug
+    public static class Debug
     {
+        public static bool IsTest { get; } = ConfigurationManager.AppSettings["debug"].Equals("true");
 
         public static void Log(object obj)
         {
             Console.WriteLine(string.Format("==== {0}", obj));
         }
 
+        public static void LogTest()
+        {
+            if (!IsTest)
+            {
+                return;
+            }
+            Console.WriteLine();
+        }
+
         public static void LogTest(object obj)
         {
+            if (!IsTest)
+            {
+                return;
+            }
             Console.WriteLine(string.Format("[Test] {0}", obj));
         }
 

@@ -45,6 +45,7 @@
     <Compile Include="Summary2.cs" />
     <Compile Include="Summary3.cs" />
     <Compile Include="Summary4.cs" />
+    <Compile Include="Summary5.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

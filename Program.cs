@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Reflection;
@@ -14,7 +15,11 @@ namespace Showdoc
 
         public static void Main(string[] args)
         {
-            args = new string[] { "F:/Showdoc/Summary/bin/Debug/Summary.xml" };
+            if (Debug.IsTest)
+            {
+                Debug.LogTest("测试模式");
+                args = new string[] { "F:/Showdoc/Summary/bin/Debug/Summary.xml" };
+            }
             if (args != null && args.Length != 0)
             {
                 foreach (string arg in args)
@@ -44,10 +49,43 @@ namespace Showdoc
                         TryAnalyzeAssembly(assembly, ref showdocs);
                     }
                     //5.逐目录生成showdoc
-                    //for (int i = 0; i < showdocs.Length; i++)
-                    //{
-                    //    CreateShowdoc(ConfigurationManager.AppSettings["api_key"], ConfigurationManager.AppSettings["api_token"], showdocs[i]);
-                    //}
+                    if (Debug.IsTest)
+                    {
+                        for (int i = 0; i < showdocs.Length; i++)
+                        {
+                            Showdoc showdoc = showdocs[i];
+                            Debug.LogTest("================================================================");
+                            Debug.LogTest(string.Format("Catalog:{0}    |Title:{1}", showdocs[i].catalog, showdocs[i].title));
+                            for (int j = 0; j < showdoc.classes.Count; j++)
+                            {
+                                ClassNode classNode = showdoc.classes[j];
+                                Debug.LogTest(string.Format("    T{0}:{1}   |Summary:{2}", j + 1, classNode.name, classNode.summary));
+                                for (int k = 0; k < classNode.properties.Count; k++)
+                                {
+                                    PropertyNode propertyNode = classNode.properties[k];
+                                    Debug.LogTest(string.Format("       P{0}:{1}    |Summary:{2}", k + 1, propertyNode.name, propertyNode.summary));
+                                }
+                                for (int k = 0; k < classNode.fields.Count; k++)
+                                {
+                                    FieldNode fieldNode = classNode.fields[k];
+                                    Debug.LogTest(string.Format("       F{0}:{1}    |Summary:{2}", k + 1, fieldNode.name, fieldNode.summary));
+                                }
+                                for (int k = 0; k < classNode.methods.Count; k++)
+                                {
+                                    MethodNode methodNode = classNode.methods[k];
+                                    Debug.LogTest(string.Format("       M{0}:{1}    |Summary:{2}", k + 1, methodNode.name, methodNode.summary));
+                                }
+                            }
+                            Debug.LogTest();
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < showdocs.Length; i++)
+                        {
+                            CreateShowdoc(ConfigurationManager.AppSettings["api_key"], ConfigurationManager.AppSettings["api_token"], showdocs[i]);
+                        }
+                    }
                 }
             }
             else
@@ -434,7 +472,7 @@ namespace Showdoc
             //目录
             string catalog = GetInnerText(node.SelectSingleNode("catalog"));
             //是否参与生成注释文档
-            bool showdoc = GetValueByKey(node, "showdoc").Equals("true");
+            bool showdoc = GetValueByKey(node, "showdoc") == "true";
             return new PropertyNode(name, type, summary, catalog, showdoc, accessors);
         }
 
@@ -451,7 +489,7 @@ namespace Showdoc
             //目录
             string catalog = GetInnerText(node.SelectSingleNode("catalog"));
             //是否参与生成注释文档
-            bool showdoc = GetValueByKey(node, "showdoc").Equals("true");
+            bool showdoc = GetValueByKey(node, "showdoc") == "true";
             return new FieldNode(name, type, summary, catalog, showdoc);
         }
 
@@ -491,6 +529,7 @@ namespace Showdoc
                         break;
                 }
             }
+            //去掉方法名和小括号
             var match = Regex.Match(sb.ToString(), "(?<=\\()\\S+(?=\\))");
             string[] argTypes = match.Value == string.Empty ? new string[0] : match.Value.Split(',');
             for (int i = 0; i < argTypes.Length; i++)

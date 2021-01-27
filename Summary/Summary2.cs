@@ -15,7 +15,8 @@ namespace Summary
         /// </summary>
         /// <param name="func">返回值的回调</param>
         /// <param name="dictionary">字典</param>
-        public void Method1(Func<string, int> func, Dictionary<int, StructBody> dictionary)
+        /// <param name="array">数组</param>
+        public void Method1(Func<string, int> func, Dictionary<int, StructBody> dictionary, int[] array)
         {
 
         }
