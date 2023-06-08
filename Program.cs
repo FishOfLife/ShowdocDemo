@@ -18,7 +18,7 @@ namespace Showdoc
             if (Debug.IsTest)
             {
                 Debug.LogTest("测试模式");
-                args = new string[] { "F:/Showdoc/Summary/bin/Debug/Summary.xml" };
+                args = new string[] { "G:/C#/Showdoc/Summary/bin/Debug/Summary.xml" };
             }
             if (args != null && args.Length != 0)
             {
@@ -35,56 +35,30 @@ namespace Showdoc
                         continue;
                     }
                     //2.解析xml
-                    Showdoc[] showdocs;
-                    if (!TryAnalyzeXml(xml, out showdocs))
+                    List<Showdoc> showdocList;
+                    if (!TryAnalyzeXml(xml, out showdocList))
                     {
                         continue;
                     }
+                    Showdoc[] showdocs = showdocList.ToArray();
                     //3.加载dll
                     string path = arg.Replace(".xml", ".dll");
                     Assembly assembly;
                     if (TryLoadAssembly(path, out assembly))
                     {
                         //4.解析dll
-                        TryAnalyzeAssembly(assembly, ref showdocs);
+                        TryAnalyzeAssembly(assembly, showdocs);
                     }
                     //5.逐目录生成showdoc
                     if (Debug.IsTest)
                     {
-                        for (int i = 0; i < showdocs.Length; i++)
-                        {
-                            Showdoc showdoc = showdocs[i];
-                            Debug.LogTest("================================================================");
-                            Debug.LogTest(string.Format("Catalog:{0}    |Title:{1}", showdocs[i].catalog, showdocs[i].title));
-                            for (int j = 0; j < showdoc.classes.Count; j++)
-                            {
-                                ClassNode classNode = showdoc.classes[j];
-                                Debug.LogTest(string.Format("    T{0}:{1}   |Summary:{2}", j + 1, classNode.name, classNode.summary));
-                                for (int k = 0; k < classNode.properties.Count; k++)
-                                {
-                                    PropertyNode propertyNode = classNode.properties[k];
-                                    Debug.LogTest(string.Format("       P{0}:{1}    |Summary:{2}", k + 1, propertyNode.name, propertyNode.summary));
-                                }
-                                for (int k = 0; k < classNode.fields.Count; k++)
-                                {
-                                    FieldNode fieldNode = classNode.fields[k];
-                                    Debug.LogTest(string.Format("       F{0}:{1}    |Summary:{2}", k + 1, fieldNode.name, fieldNode.summary));
-                                }
-                                for (int k = 0; k < classNode.methods.Count; k++)
-                                {
-                                    MethodNode methodNode = classNode.methods[k];
-                                    Debug.LogTest(string.Format("       M{0}:{1}    |Summary:{2}", k + 1, methodNode.name, methodNode.summary));
-                                }
-                            }
-                            Debug.LogTest();
-                        }
+                        LogShowdoc(showdocs);
                     }
                     else
                     {
-                        for (int i = 0; i < showdocs.Length; i++)
-                        {
-                            CreateShowdoc(ConfigurationManager.AppSettings["api_key"], ConfigurationManager.AppSettings["api_token"], showdocs[i]);
-                        }
+                        string apiKey = ConfigurationManager.AppSettings["api_key"];
+                        string apiToken = ConfigurationManager.AppSettings["api_token"];
+                        CreateShowdocs(apiKey, apiToken, showdocs);
                     }
                 }
             }
@@ -95,6 +69,8 @@ namespace Showdoc
             Debug.Log("结束");
             Debug.ReadKey();
         }
+
+        #region Xml
 
         public static bool TryLoadXml(string path, out XmlDocument xml)
         {
@@ -112,7 +88,7 @@ namespace Showdoc
             }
         }
 
-        public static bool TryAnalyzeXml(XmlDocument xml, out Showdoc[] showdocs)
+        public static bool TryAnalyzeXml(XmlDocument xml, out List<Showdoc> showdocs)
         {
             //1.XPath搜索类,属性,字段,方法的注释
             XmlNodeList classMembers = xml.SelectNodes("/doc//member[contains(@name,\"T:\")]");
@@ -168,127 +144,16 @@ namespace Showdoc
             FillShowdocField(fieldMembers, classNodes, showdocDic);
             //7.填充方法
             FillShowdocMethod(methodMembers, classNodes, showdocDic);
-            showdocs = new Showdoc[showdocDic.Count];
-            int count = 0;
+            //8.去掉无内容Showodc
+            showdocs = new List<Showdoc>();
             foreach (var pair in showdocDic)
             {
-                showdocs[count] = pair.Value;
-                count++;
-            }
-            return true;
-        }
-
-        public static bool TryLoadAssembly(string path, out Assembly assembly)
-        {
-            try
-            {
-                assembly = Assembly.LoadFile(path);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e.Message);
-                assembly = null;
-                return false;
-            }
-        }
-
-        public static void TryAnalyzeAssembly(Assembly assembly, ref Showdoc[] showdocs)
-        {
-            //遍历每一份showdoc
-            for (int i = 0; i < showdocs.Length; i++)
-            {
-                Showdoc showdoc = showdocs[i];
-                //遍历每一个类
-                for (int j = 0; j < showdoc.classes.Count; j++)
+                if (!IsShowdocEmpty(pair.Value))
                 {
-                    ClassNode classNode = showdoc.classes[j];
-                    Type type = assembly.GetType(classNode.name);
-                    if (type == null)
-                    {
-                        continue;
-                    }
-                    if (classNode.properties != null && classNode.properties.Count != 0)
-                    {
-                        //补充属性数据
-                        for (int k = 0; k < classNode.properties.Count; k++)
-                        {
-                            PropertyNode propertyNode = classNode.properties[k];
-                            PropertyInfo propertyInfo = type.GetProperty(propertyNode.name);
-                            if (propertyInfo == null)
-                            {
-                                continue;
-                            }
-                            propertyNode.type = propertyInfo.PropertyType.Name;
-                            int a = propertyInfo.GetMethod == null ? 0 : 1;
-                            int b = propertyInfo.SetMethod != null ? 0 : 1;
-                            propertyNode.accessors = (Accessors)(b << 1) + a;
-                        }
-                    }
-                    if (classNode.fields != null && classNode.fields.Count != 0)
-                    {
-                        //补充字段数据
-                        for (int k = 0; k < classNode.fields.Count; k++)
-                        {
-                            FieldNode fieldNode = classNode.fields[k];
-                            FieldInfo fieldInfo = type.GetField(fieldNode.name);
-                            if (fieldInfo == null)
-                            {
-                                continue;
-                            }
-                            fieldNode.type = fieldInfo.FieldType.Name;
-                        }
-                    }
-                    if (classNode.methods != null && classNode.methods.Count != 0)
-                    {
-                        //补充方法数据
-                        MethodInfo[] methodInfos = type.GetMethods();
-                        for (int k = 0; k < classNode.methods.Count; k++)
-                        {
-                            MethodNode methodNode = classNode.methods[k];
-                            for (int l = 0; l < methodInfos.Length; l++)
-                            {
-                                MethodInfo methodInfo = methodInfos[l];
-                                //过滤方法名不同的,剩下同名方法
-                                int index = methodNode.name.IndexOf('(');
-                                index = index == -1 ? methodNode.name.Length : index;
-                                string name = methodNode.name.Substring(0, index);
-                                if (methodInfo.Name != name)
-                                {
-                                    continue;
-                                }
-                                //过滤参数列表数量不同的,剩下同名同参数数量方法
-                                ParameterInfo[] parameterInfos = methodInfo.GetParameters();
-                                if (parameterInfos.Length != methodNode.args.Count)
-                                {
-                                    continue;
-                                }
-                                bool isEquals = true;
-                                //逐参数类型判断
-                                for (int m = 0; m < parameterInfos.Length; m++)
-                                {
-                                    int radex = methodNode.args[m].type.LastIndexOf('.');
-                                    radex = radex == -1 ? 0 : radex + 1;
-                                    string argName = methodNode.args[m].type.Substring(radex);
-                                    if (parameterInfos[m].ParameterType.Name != argName)
-                                    {
-                                        isEquals = false;
-                                        break;
-                                    }
-                                }
-                                //找到该方法
-                                if (isEquals)
-                                {
-                                    string key = methodInfo.ReturnType.Name;
-                                    string value = methodNode.returns.Value;
-                                    methodNode.returns = new KeyValuePair<string, string>(key, value);
-                                    Debug.Log(string.Format("修正方法{0}.{1}", classNode.name, methodNode.name));
-                                }
-                            }
-                        }
-                    }
+                    showdocs.Add(pair.Value);
                 }
             }
+            return true;
         }
 
         public static void FillShowdocProperty(XmlNodeList list, Dictionary<string, ClassNode> nodes, Dictionary<string, Showdoc> showdocs)
@@ -501,6 +366,10 @@ namespace Showdoc
             string subName = index > 0 ? name.Substring(0, index) : name;
             index = subName.LastIndexOf('.');
             name = name.Substring(index + 1);
+            if (!name.Contains("("))
+            {
+                name += "()";
+            }
             StringBuilder sb = new StringBuilder(name);
             int count1 = 0;
             int count2 = 0;
@@ -591,6 +460,328 @@ namespace Showdoc
                 value = inner;
             }
             return value;
+        }
+
+        public static bool IsShowdocEmpty(Showdoc showdoc)
+        {
+            if (showdoc == null)
+            {
+                return true;
+            }
+            if (showdoc.classes.Count == 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region Assembly
+
+        public static bool TryLoadAssembly(string path, out Assembly assembly)
+        {
+            try
+            {
+                assembly = Assembly.LoadFile(path);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+                assembly = null;
+                return false;
+            }
+        }
+
+        public static void TryAnalyzeAssembly(Assembly assembly, Showdoc[] showdocs)
+        {
+            //遍历每一份showdoc
+            for (int i = 0; i < showdocs.Length; i++)
+            {
+                Showdoc showdoc = showdocs[i];
+                //遍历每一个类
+                for (int j = 0; j < showdoc.classes.Count; j++)
+                {
+                    ClassNode classNode = showdoc.classes[j];
+                    Type type = assembly.GetType(classNode.name);
+                    if (type == null)
+                    {
+                        continue;
+                    }
+                    FillShowdocClass(classNode, type);//类最后修正
+                    FillShowdocProperty(classNode.properties, classNode, type);
+                    FillShowdocField(classNode.fields, classNode, type);
+                    FillShowdocMethod(classNode.methods, classNode, type);
+                }
+            }
+        }
+
+        public static void FillShowdocClass(ClassNode classNode, Type type)
+        {
+            if (classNode.name.Contains("`"))
+            {
+                string name = classNode.name;
+                Type[] generics = type.GetGenericArguments();
+                int index = name.IndexOf('`');
+                name = name.Substring(0, index) + "<" + generics[0].Name;
+                for (int i = 1; i < generics.Length; i++)
+                {
+                    name += "," + generics[i].Name;
+                }
+                name += ">";
+                classNode.name = name;
+                Debug.LogTest(string.Format("修正类{0}", classNode.name));
+            }
+        }
+
+        public static void FillShowdocProperty(List<PropertyNode> propertyNodes, ClassNode classNode, Type type)
+        {
+            if (propertyNodes != null && propertyNodes.Count != 0)
+            {
+                //补充属性数据
+                for (int i = 0; i < propertyNodes.Count; i++)
+                {
+                    PropertyNode propertyNode = propertyNodes[i];
+                    PropertyInfo propertyInfo = type.GetProperty(propertyNode.name);
+                    if (propertyInfo == null)
+                    {
+                        continue;
+                    }
+                    propertyNode.type = GetGenericName(propertyInfo.PropertyType);
+                    int a = propertyInfo.GetMethod == null ? 0 : 1;
+                    int b = propertyInfo.SetMethod == null ? 0 : 1;
+                    propertyNode.accessors = (Accessors)(b << 1) + a;
+                    Debug.LogTest(string.Format("修正属性{0}.{1}", classNode.name, propertyNode.name));
+                }
+            }
+        }
+
+        public static void FillShowdocField(List<FieldNode> fieldNodes, ClassNode classNode, Type type)
+        {
+            if (fieldNodes != null && fieldNodes.Count != 0)
+            {
+                //补充字段数据
+                for (int i = 0; i < fieldNodes.Count; i++)
+                {
+                    FieldNode fieldNode = fieldNodes[i];
+                    FieldInfo fieldInfo = type.GetField(fieldNode.name);
+                    if (fieldInfo == null)
+                    {
+                        continue;
+                    }
+                    fieldNode.type = GetGenericName(fieldInfo.FieldType);
+                    Debug.LogTest(string.Format("修正字段{0}.{1}", classNode.name, fieldNode.name));
+                }
+            }
+        }
+
+        public static void FillShowdocMethod(List<MethodNode> methodNodes, ClassNode classNode, Type type)
+        {
+            if (methodNodes != null && methodNodes.Count != 0)
+            {
+                //补充方法数据
+                MethodInfo[] methodInfos = type.GetMethods();
+                for (int i = 0; i < methodNodes.Count; i++)
+                {
+                    MethodNode methodNode = methodNodes[i];
+                    for (int j = 0; j < methodInfos.Length; j++)
+                    {
+                        MethodInfo methodInfo = methodInfos[j];
+                        //过滤方法名不同的,剩下同名方法
+                        string methodName = GetMethodName(methodNode.name);
+                        if (methodInfo.Name != methodName)
+                        {
+                            continue;
+                        }
+                        //过滤参数列表数量不同的,剩下同名同参数数量方法
+                        ParameterInfo[] parameterInfos = methodInfo.GetParameters();
+                        if (parameterInfos.Length != methodNode.args.Count)
+                        {
+                            continue;
+                        }
+                        //逐参数类型判断
+                        if (IsArgTypeEquals(parameterInfos, methodNode.args, methodInfo, type))
+                        {
+                            string key = GetGenericName(methodInfo.ReturnType);
+                            string value = methodNode.returns.Value;
+                            methodNode.returns = new KeyValuePair<string, string>(key, value);
+
+                            if (methodNode.name.Contains("``"))
+                            {
+                                //Method``1替换成Method<T>
+                                string name = methodNode.name;
+                                Type[] generics = methodInfo.GetGenericArguments();
+                                int index1 = name.IndexOf('`');
+                                int index2 = name.IndexOf('(');
+                                string old = name.Substring(index1, index2 - index1);
+                                string rep = "<" + generics[0].Name;
+                                for (int k = 1; k < generics.Length; k++)
+                                {
+                                    rep += "," + generics[k].Name;
+                                }
+                                rep += ">";
+                                name = name.Replace(old, rep);
+                                //Method<T>(``0)替换成Method<T>(T)
+                                //替换方法的泛型
+                                for (int k = 0; k < generics.Length; k++)
+                                {
+                                    name = name.Replace(string.Format("``{0}", k), generics[k].Name);
+                                }
+                                //替换类的泛型
+                                generics = type.GetGenericArguments();
+                                if (generics != null && generics.Length != 0)
+                                {
+                                    for (int k = 0; k < generics.Length; k++)
+                                    {
+                                        name = name.Replace(string.Format("`{0}", k), generics[k].Name);
+                                    }
+                                }
+                                methodNode.name = name;
+                            }
+
+                            Debug.LogTest(string.Format("修正方法{0}.{1}", classNode.name, methodNode.name));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        public static string GetGenericName(Type type)
+        {
+            if (!type.IsGenericType)
+            {
+                if (type.IsArray)
+                {
+                    return GetGenericName(type.GetElementType()) + "[]";
+                }
+                return type.Name;
+            }
+            string name = type.Name;
+            Type[] generics = type.GetGenericArguments();
+            int index = name.IndexOf('`');
+            name = name.Substring(0, index) + "<";
+            for (int i = 0; i < generics.Length; i++)
+            {
+                if (i != 0)
+                {
+                    name += ",";
+                }
+                name += GetGenericName(generics[i]);
+            }
+            name += ">";
+            return name;
+        }
+
+        public static bool IsArgTypeEquals(ParameterInfo[] parameterInfos, List<FieldNode> fieldNodes, MethodInfo methodInfo, Type type)
+        {
+            for (int i = 0; i < parameterInfos.Length; i++)
+            {
+                string argName = GetArgName(fieldNodes[i].type);
+                if (parameterInfos[i].ParameterType.Name != argName)
+                {
+                    //未实体化泛型参数类型为`0/``0这样
+                    if (!IsGenericType(argName, type, methodInfo))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public static string GetMethodName(string name)
+        {
+            int index = name.IndexOf('(');
+            index = index == -1 ? name.Length : index;
+            name = name.Substring(0, index);
+            index = name.IndexOf('`');
+            index = index == -1 ? name.Length : index;
+            name = name.Substring(0, index);
+            return name;
+        }
+
+        public static string GetArgName(string name)
+        {
+            if (name.Contains("{") && name.Contains("}"))
+            {
+                //实体化泛型
+                int layer = 0;
+                int count = 1;
+                StringBuilder sb = new StringBuilder(name);
+                //获取第一层括号内参数个数
+                for (int i = 0; i < sb.Length; i++)
+                {
+                    switch (sb[i])
+                    {
+                        case '{':
+                            layer++;
+                            break;
+                        case '}':
+                            layer--;
+                            break;
+                        case ',':
+                            if (layer == 1)
+                            {
+                                count++;
+                            }
+                            break;
+                    }
+                }
+                //去掉括号和括号内的内容
+                int index = name.IndexOf('{');
+                name = name.Substring(0, index);
+                name = string.Format("{0}`{1}", name, count);
+            }
+            //去前缀
+            int radex = name.LastIndexOf('.');
+            radex = radex == -1 ? 0 : radex + 1;
+            name = name.Substring(radex);
+            return name;
+        }
+
+        public static bool IsGenericType(string argType, Type type, MethodInfo method)
+        {
+            Type[] generics = null;
+            if (argType.StartsWith("``"))
+            {    //方法的泛型参数
+                generics = method.GetGenericArguments();
+
+            }
+            else if (argType.StartsWith("`"))
+            {     //类的泛型参数
+                generics = type.GetGenericArguments();
+
+            }
+            if (generics == null)
+            {
+                return false;
+            }
+            argType = argType.Replace('`', ' ');
+            if (argType.EndsWith("[]"))
+            {
+                //泛型数组
+                argType = argType.Replace("[]", "");
+            }
+            int index = int.Parse(argType);
+            if (generics.Length < index + 1)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region Showdoc
+
+        public static void CreateShowdocs(string apiKey, string apiToken, Showdoc[] showdocs)
+        {
+            for (int i = 0; i < showdocs.Length; i++)
+            {
+                CreateShowdoc(apiKey, apiToken, showdocs[i]);
+            }
         }
 
         public static void CreateShowdoc(string apiKey, string apiToken, Showdoc showdoc)
@@ -718,6 +909,80 @@ namespace Showdoc
             body.Remove(body.Length - 1, 1);
             return body.ToString();
         }
+
+        #endregion
+
+        #region Test
+
+        public static void LogShowdoc(Showdoc[] showdocs)
+        {
+            string showdocFormat = "{0} 目录:{1}    |标题:{2}";
+            string classFormat = "   {0}.{1} 类:{2}   |描述:{3}";
+            string propertyFormat = "       {0}.{1}.{2} 属性:{3} {4}{5}    |描述:{6}";
+            string fieldFormat = "       {0}.{1}.{2} 字段:{3} {4}    |描述:{5}";
+            string methodFormat = "       {0}.{1}.{2} 方法:{3} {4}    |描述:{5}";
+            for (int i = 0; i < showdocs.Length; i++)
+            {
+                Showdoc showdoc = showdocs[i];
+                Debug.LogTest("================================================================");
+                Debug.LogTestFormat(showdocFormat, i + 1, showdocs[i].catalog, showdocs[i].title);
+                for (int j = 0; j < showdoc.classes.Count; j++)
+                {
+                    ClassNode classNode = showdoc.classes[j];
+                    Debug.LogTestFormat(classFormat, i + 1, j + 1, classNode.name, classNode.summary);
+                    int l = 0;
+                    for (int k = 0; k < classNode.properties.Count; k++)
+                    {
+                        PropertyNode propertyNode = classNode.properties[k];
+                        l++;
+                        string accessors = string.Empty;
+                        switch (propertyNode.accessors)
+                        {
+                            case Accessors.None:
+                                break;
+                            case Accessors.Get:
+                                accessors = "[Get]";
+                                break;
+                            case Accessors.Set:
+                                accessors = "[Set]";
+                                break;
+                            default:
+                                accessors = "[Get,Set]";
+                                break;
+                        }
+                        Debug.LogTestFormat(propertyFormat, i + 1, j + 1, l, propertyNode.type, propertyNode.name, accessors, propertyNode.summary);
+                    }
+                    for (int k = 0; k < classNode.fields.Count; k++)
+                    {
+                        FieldNode fieldNode = classNode.fields[k];
+                        l++;
+                        Debug.LogTestFormat(fieldFormat, i + 1, j + 1, l, fieldNode.type, fieldNode.name, fieldNode.summary);
+                    }
+                    for (int k = 0; k < classNode.methods.Count; k++)
+                    {
+                        MethodNode methodNode = classNode.methods[k];
+                        l++;
+                        Debug.LogTestFormat(methodFormat, i + 1, j + 1, l, methodNode.returns.Key, methodNode.name, methodNode.summary);
+                    }
+                }
+                Debug.LogTest();
+            }
+        }
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 

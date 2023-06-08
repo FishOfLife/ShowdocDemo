@@ -30,6 +30,15 @@ namespace Showdoc
             Console.WriteLine(string.Format("[Test] {0}", obj));
         }
 
+        public static void LogTestFormat(string format, params object[] args)
+        {
+            if (!IsTest)
+            {
+                return;
+            }
+            Console.WriteLine(string.Format(format, args));
+        }
+
         public static void LogWarnning(object obj)
         {
             Console.WriteLine(string.Format("[Warnning] {0}", obj));

@@ -41,11 +41,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Summary1.cs" />
-    <Compile Include="Summary2.cs" />
-    <Compile Include="Summary3.cs" />
-    <Compile Include="Summary4.cs" />
-    <Compile Include="Summary5.cs" />
+    <Compile Include="SummaryUseCase1.cs" />
+    <Compile Include="SummaryUseCase2.cs" />
+    <Compile Include="SummaryUseCase3.cs" />
+    <Compile Include="SummaryUseCase4.cs" />
+    <Compile Include="SummaryUseCase5.cs" />
+    <Compile Include="SummaryUseCase6.cs" />
+    <Compile Include="SummaryUseCase7.cs" />
+    <Compile Include="SummaryUseCase8.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

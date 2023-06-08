@@ -2,7 +2,7 @@
 
 namespace Showdoc
 {
-    public struct Showdoc
+    public class Showdoc
     {
 
         public string catalog;
@@ -25,7 +25,7 @@ namespace Showdoc
 
     }
 
-    public struct ClassNode
+    public class ClassNode
     {
         public string name;
         public string summary;
@@ -70,7 +70,7 @@ namespace Showdoc
 
     }
 
-    public struct PropertyNode
+    public class PropertyNode
     {
         public string name;
         public string type;
@@ -101,7 +101,7 @@ namespace Showdoc
 
     }
 
-    public struct FieldNode
+    public class FieldNode
     {
         public string name;
         public string type;
@@ -129,7 +129,7 @@ namespace Showdoc
 
     }
 
-    public struct MethodNode
+    public class MethodNode
     {
         public string name;
         public string summary;

@@ -4,104 +4,383 @@
         <name>Summary</name>
     </assembly>
     <members>
-        <member name="T:Summary.Summary1">
+        <member name="T:Summary.SummaryUseCase1">
             <summary showdoc="true">
-            类描述
+            注释文档用例1,属性测试
             </summary>
-            <catalog>一级目录/二级目录/标题</catalog>
+            <catalog>一级目录/二级目录/属性测试</catalog>
         </member>
-        <member name="M:Summary.Summary1.Method1(System.Int32,System.Single,System.String,System.Double,System.Int64)">
+        <member name="P:Summary.SummaryUseCase1.Value1">
             <summary>
-            方法描述
+            可读写属性
             </summary>
-            <param name="arg1">整数</param>
-            <param name="arg2">单精度浮点数</param>
-            <param name="arg3">字符串</param>
-            <param name="arg4">双精度浮点数</param>
-            <param name="arg5">长整型</param>
-            <returns>返回值</returns>
         </member>
-        <member name="M:Summary.Summary1.Method2(Summary.State,System.Action,Summary.StructBody)">
+        <member name="P:Summary.SummaryUseCase1.Value2">
             <summary>
-            方法描述2
+            可读属性
             </summary>
-            <param name="state">枚举类型</param>
-            <param name="action">引用类型</param>
-            <param name="structBody">结构体</param>
-            <returns>返回整型</returns>
         </member>
-        <member name="T:Summary.Summary2">
+        <member name="P:Summary.SummaryUseCase1.Value3">
+            <summary>
+            对外可读对内可写属性
+            </summary>
+        </member>
+        <member name="T:Summary.SummaryUseCase2">
             <summary showdoc="true">
-            类描述1
+            注释文档用例2,字段测试
             </summary>
-            <catalog>一级目录/二级目录/特殊参数方法</catalog>
+            <catalog>一级目录/二级目录/字段测试</catalog>
         </member>
-        <member name="M:Summary.Summary2.Method1(System.Func{System.String,System.Int32},System.Collections.Generic.Dictionary{System.Int32,Summary.StructBody},System.Int32[])">
+        <member name="F:Summary.SummaryUseCase2.field1">
             <summary>
-            复杂参数方法
+            字段1
             </summary>
-            <param name="func">返回值的回调</param>
-            <param name="dictionary">字典</param>
-            <param name="array">数组</param>
         </member>
-        <member name="M:Summary.Summary2.Method2">
+        <member name="F:Summary.SummaryUseCase2.field2">
             <summary>
-            无参方法
+            字段2
             </summary>
-            <returns>返回整型</returns>
         </member>
-        <member name="T:Summary.Summary3">
-            <summary>
-             类描述2,showdoc在方法中
-             </summary>
-        </member>
-        <member name="M:Summary.Summary3.Method(System.String)">
+        <member name="T:Summary.SummaryUseCase3">
             <summary showdoc="true">
-            方法
+            注释文档用例3,方法测试
+            </summary>
+            <catalog>一级目录/二级目录/方法测试</catalog>
+        </member>
+        <member name="M:Summary.SummaryUseCase3.Init">
+            <summary>
+            无参无返
+            </summary>
+        </member>
+        <member name="M:Summary.SummaryUseCase3.Init(System.Object)">
+            <summary>
+            单参无返
+            </summary>
+            <param name="data">参数1</param>
+        </member>
+        <member name="M:Summary.SummaryUseCase3.Init(System.Object,System.Object,System.Int64)">
+            <summary>
+            多参无返
+            </summary>
+            <param name="data">参数1</param>
+            <param name="config">参数2</param>
+            <param name="time">参数3</param>
+        </member>
+        <member name="M:Summary.SummaryUseCase3.Init(System.Object,System.Object,System.Int64,System.String)">
+            <summary>
+            多参有返
+            </summary>
+            <param name="data">参数1</param>
+            <param name="config">参数2</param>
+            <param name="time">参数3</param>
+            <param name="path">参数4</param>
+            <returns></returns>
+        </member>
+        <member name="T:Summary.SummaryUseCase4">
+            <summary showdoc="true">
+            注释文档用例4,复杂类型测试
+            </summary>
+            <catalog>一级目录/二级目录/复杂类型测试</catalog>
+        </member>
+        <member name="P:Summary.SummaryUseCase4.Dictionary1">
+            <summary>
+            字典类型
+            </summary>
+        </member>
+        <member name="P:Summary.SummaryUseCase4.List1">
+            <summary>
+            列表类型
+            </summary>
+        </member>
+        <member name="F:Summary.SummaryUseCase4.arrys">
+            <summary>
+            数组类型
+            </summary>
+        </member>
+        <member name="M:Summary.SummaryUseCase4.Method1(System.Collections.Generic.Dictionary{System.Single,System.Int32},System.Func{System.String,System.Int32})">
+            <summary>
+            字典类型,委托类型
+            </summary>
+            <param name="arg1">字典参数</param>
+            <param name="arg2">委托参数</param>
+        </member>
+        <member name="M:Summary.SummaryUseCase4.Method2(System.Action,System.Action{System.Int32})">
+            <summary>
+            不重复哈希表类型,委托类型
+            </summary>
+            <param name="arg1">无参委托</param>
+            <param name="arg2">单参委托</param>
+            <returns></returns>
+        </member>
+        <member name="M:Summary.SummaryUseCase4.Method3(System.Action,System.Action{System.Int32})">
+            <summary>
+            不重复哈希表类型,委托类型
+            </summary>
+            <param name="arg1">无参委托</param>
+            <param name="arg2">单参委托</param>
+            <returns></returns>
+        </member>
+        <member name="M:Summary.SummaryUseCase4.Method4(System.Collections.Generic.KeyValuePair{System.Int32,System.Func{System.Single,System.Int64}})">
+            <summary>
+            究极恶心多重嵌套类型
+            </summary>
+            <param name="arg">键值对</param>
+            <returns>字典</returns>
+        </member>
+        <member name="T:Summary.SummaryUseCase5`3">
+            <summary showdoc="true">
+            注释文档用例5,泛型+重载测试
+            </summary>
+            <catalog>一级目录/二级目录/泛型和重载测试</catalog>
+        </member>
+        <member name="P:Summary.SummaryUseCase5`3.Property1">
+            <summary>
+            类泛型T1类型的属性
+            </summary>
+        </member>
+        <member name="F:Summary.SummaryUseCase5`3.dictionary">
+            <summary>
+            字典
+            </summary>
+        </member>
+        <member name="M:Summary.SummaryUseCase5`3.Method1``2(`0,`1,`2,``0,``1)">
+            <summary>
+            包含类泛型和方法泛型的方法
+            </summary>
+            <typeparam name="T4">方法泛型1</typeparam>
+            <typeparam name="T5">方法泛型2</typeparam>
+            <param name="t1">参数1</param>
+            <param name="t2">参数2</param>
+            <param name="t3">参数3</param>
+            <param name="t4">参数4</param>
+            <param name="t5">参数5</param>
+            <returns>返回类泛型T1的实例</returns>
+        </member>
+        <member name="M:Summary.SummaryUseCase5`3.Method1``1(`2[],System.Collections.Generic.Dictionary{System.Func{`0,`1},System.Action{`2,``0}})">
+            <summary>
+            究极无敌恶心之嵌套类型+泛型+方法重载
+            </summary>
+            <typeparam name="T4">方法泛型</typeparam>
+            <param name="t3s">类泛型T3数组</param>
+            <param name="dic">字典</param>
+            <returns></returns>
+        </member>
+        <member name="T:Summary.SummaryUseCase6_1">
+            <summary showdoc="true">
+            注释文档用例6_1,逐渐恶心之文档包含多个类之第一个类
+            </summary>
+            <catalog>一级目录/二级目录/逐渐恶心之文档包含多个类</catalog>
+        </member>
+        <member name="P:Summary.SummaryUseCase6_1.Property1">
+            <summary>
+            属性1
+            </summary>
+        </member>
+        <member name="P:Summary.SummaryUseCase6_1.Property2">
+            <summary>
+            属性2
+            </summary>
+        </member>
+        <member name="F:Summary.SummaryUseCase6_1.Field1">
+            <summary>
+            字段1
+            </summary>
+        </member>
+        <member name="F:Summary.SummaryUseCase6_1.Field2">
+            <summary>
+            字段2
+            </summary>
+        </member>
+        <member name="M:Summary.SummaryUseCase6_1.Method1(System.Int32,System.Single)">
+            <summary>
+            方法1
             </summary>
             <param name="arg1">参数1</param>
-            <catalog>一级目录/二级目录/showdoc标签在方法上</catalog>
+            <param name="arg2">参数2</param>
+            <returns>字符串</returns>
         </member>
-        <member name="T:Summary.Summary4">
+        <member name="M:Summary.SummaryUseCase6_1.Method2(System.Int32)">
+            <summary>
+            方法2
+            </summary>
+            <param name="arg1">参数1</param>
+            <returns>字符</returns>
+        </member>
+        <member name="T:Summary.SummaryUseCase6_2">
             <summary showdoc="true">
-            只有类注释
+            注释文档用例6_2,逐渐恶心之文档包含多个类之第二个类
             </summary>
-            <catalog>一级目录/二级目录/只有类注释</catalog>
+            <catalog>一级目录/二级目录/逐渐恶心之文档包含多个类</catalog>
         </member>
-        <member name="T:Summary.Summary5`1">
+        <member name="P:Summary.SummaryUseCase6_2.Property1">
+            <summary>
+            属性1
+            </summary>
+        </member>
+        <member name="P:Summary.SummaryUseCase6_2.Property2">
+            <summary>
+            属性2
+            </summary>
+        </member>
+        <member name="F:Summary.SummaryUseCase6_2.Field1">
+            <summary>
+            字段1
+            </summary>
+        </member>
+        <member name="F:Summary.SummaryUseCase6_2.Field2">
+            <summary>
+            字段2
+            </summary>
+        </member>
+        <member name="M:Summary.SummaryUseCase6_2.Method1(System.Int32,System.Single)">
+            <summary>
+            方法1
+            </summary>
+            <param name="arg1">参数1</param>
+            <param name="arg2">参数2</param>
+            <returns>字符串</returns>
+        </member>
+        <member name="M:Summary.SummaryUseCase6_2.Method2(System.Int32)">
+            <summary>
+            方法2
+            </summary>
+            <param name="arg1">参数1</param>
+            <returns>字符</returns>
+        </member>
+        <member name="T:Summary.SummaryUseCase6_3">
             <summary showdoc="true">
-            泛型类
+            注释文档用例6_3,逐渐恶心之文档包含多个类之第三个类
             </summary>
-            <typeparam name="T1">泛型描述</typeparam>
-            <catalog>一级目录/二级目录/泛型类和方法</catalog>
+            <catalog>一级目录/二级目录/逐渐恶心之文档包含多个类</catalog>
         </member>
-        <member name="F:Summary.Summary5`1.field1">
+        <member name="P:Summary.SummaryUseCase6_3.Property1">
             <summary>
-            泛型字段1
-            </summary>
-        </member>
-        <member name="P:Summary.Summary5`1.Property1">
-            <summary>
-            泛型属性
+            属性1
             </summary>
         </member>
-        <member name="M:Summary.Summary5`1.Method1``1(System.Func{System.String[],System.Collections.Generic.Dictionary{``0,System.Single}})">
+        <member name="P:Summary.SummaryUseCase6_3.Property2">
             <summary>
-            泛型方法
+            属性2
             </summary>
-            <typeparam name="T2">泛型描述</typeparam>
-            <param name="func">含参返回委托</param>
+        </member>
+        <member name="F:Summary.SummaryUseCase6_3.Field1">
+            <summary>
+            字段1
+            </summary>
+        </member>
+        <member name="F:Summary.SummaryUseCase6_3.Field2">
+            <summary>
+            字段2
+            </summary>
+        </member>
+        <member name="M:Summary.SummaryUseCase6_3.Method1(System.Int32,System.Single)">
+            <summary>
+            方法1
+            </summary>
+            <param name="arg1">参数1</param>
+            <param name="arg2">参数2</param>
+            <returns>字符串</returns>
+        </member>
+        <member name="M:Summary.SummaryUseCase6_3.Method2(System.Int32)">
+            <summary>
+            方法2
+            </summary>
+            <param name="arg1">参数1</param>
+            <returns>字符</returns>
+        </member>
+        <member name="T:Summary.SummaryUseCase7">
+            <summary showdoc="true">
+            
+            </summary>
+            <catalog>一级目录/二级目录/空注释</catalog>
+        </member>
+        <member name="P:Summary.SummaryUseCase7.Property">
+            <summary>
+            属性1
+            </summary>
+        </member>
+        <member name="M:Summary.SummaryUseCase7.Method(System.Int32,System.String)">
+            <summary>
+            返回值为空
+            </summary>
+            <param name="arg1">参数1</param>
+            <param name="arg2">参数2</param>
+            <returns></returns>
+        </member>
+        <member name="M:Summary.SummaryUseCase7.Method(System.Int32,System.String,System.Single)">
+            <summary>
+            参数为空
+            </summary>
+            <param name="arg1"></param>
+            <param name="arg2">参数2</param>
+            <param name="arg3"></param>
             <returns>返回值</returns>
         </member>
-        <member name="M:Summary.Summary5`1.Method2``2(`0,``0)">
+        <member name="M:Summary.SummaryUseCase7.Method(System.Int32,System.String,System.Single,System.Int64)">
             <summary>
-            泛型方法1
+            
             </summary>
-            <typeparam name="T3">第一个泛型</typeparam>
-            <typeparam name="T4">第二个泛型</typeparam>
-            <param name="t1">泛型参数1</param>
-            <param name="t2">泛型参数2</param>
-            <returns></returns>
+            <param name="arg1">描述为空</param>
+            <param name="arg2">描述为空</param>
+            <param name="arg3">描述为空</param>
+            <param name="arg4">描述为空</param>
+            <returns>描述为空</returns>
+        </member>
+        <member name="T:Summary.SummaryUseCase8">
+            <summary showdoc="true">
+            注释文档用例8,脚踏八条船之类对应多文档
+            </summary>
+        </member>
+        <member name="P:Summary.SummaryUseCase8.Property1">
+            <summary>
+            第一条船
+            </summary>
+            <catalog>一级目录/二级目录/第一条船</catalog>
+        </member>
+        <member name="P:Summary.SummaryUseCase8.Property2">
+            <summary>
+            第二条船
+            </summary>
+            <catalog>一级目录/二级目录/第二条船</catalog>
+        </member>
+        <member name="P:Summary.SummaryUseCase8.Property3">
+            <summary>
+            第三条船
+            </summary>
+            <catalog>一级目录/二级目录/第三条船</catalog>
+        </member>
+        <member name="F:Summary.SummaryUseCase8.field1">
+            <summary>
+            第四条船
+            </summary>
+            <catalog>一级目录/二级目录/第四条船</catalog>
+        </member>
+        <member name="F:Summary.SummaryUseCase8.field2">
+            <summary>
+            第五条船
+            </summary>
+            <catalog>一级目录/二级目录/第五条船</catalog>
+        </member>
+        <member name="M:Summary.SummaryUseCase8.Method1">
+            <summary>
+            第六条船
+            </summary>
+            <returns>返回</returns>
+            <catalog>一级目录/二级目录/第六条船</catalog>
+        </member>
+        <member name="M:Summary.SummaryUseCase8.Method2">
+            <summary>
+            第七条船
+            </summary>
+            <returns>返回</returns>
+            <catalog>一级目录/二级目录/第七条船</catalog>
+        </member>
+        <member name="M:Summary.SummaryUseCase8.Method3">
+            <summary>
+            第八条船
+            </summary>
+            <returns>返回</returns>
+            <catalog>一级目录/二级目录/第八条船</catalog>
         </member>
     </members>
 </doc>

@@ -5,3 +5,10 @@ F:\Showdoc\Summary\bin\Debug\Summary.pdb
 F:\Showdoc\Summary\obj\Debug\Summary.dll
 F:\Showdoc\Summary\obj\Debug\Summary.pdb
 F:\Showdoc\Summary\bin\Debug\Summary.xml
+G:\C#\Showdoc\Summary\bin\Debug\Summary.xml
+G:\C#\Showdoc\Summary\bin\Debug\Summary.dll
+G:\C#\Showdoc\Summary\bin\Debug\Summary.pdb
+G:\C#\Showdoc\Summary\obj\Debug\Summary.csprojAssemblyReference.cache
+G:\C#\Showdoc\Summary\obj\Debug\Summary.csproj.CoreCompileInputs.cache
+G:\C#\Showdoc\Summary\obj\Debug\Summary.dll
+G:\C#\Showdoc\Summary\obj\Debug\Summary.pdb
